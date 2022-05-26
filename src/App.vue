@@ -23,7 +23,7 @@ function onChangeTheme(pallete: any) {
   theming.value = pallete;
 }
 
-const colors = ref(['#de7d14', '#de7d1464', '#bd357e', '#bd357e64']);
+const colors = ref(['#de7d14', '#de7d1472', '#bd357e', '#bd357e72']);
 const theming = ref(['#fff', '#2c3e50']);
 
 const theme = computed(() => {

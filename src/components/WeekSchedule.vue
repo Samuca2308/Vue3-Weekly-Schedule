@@ -148,6 +148,11 @@ function dropEvent(e: any, dayId: any, hourId: any) {
     startArr();
   }
 }
+
+function changeEvent(e: any, id: string) {
+  curRecords.value![id].duration = e;
+  console.log(curRecords.value![id].duration);
+}
 </script>
 
 <template>
@@ -189,6 +194,12 @@ function dropEvent(e: any, dayId: any, hourId: any) {
                 (numD - 1).toString() + (numH - 1).toString().padStart(2, '0')
               )
             "
+            @duration-change="
+              changeEvent(
+                $event,
+                (numD - 1).toString() + (numH - 1).toString().padStart(2, '0')
+              )
+            "
             v-if="
               curRecords[
                 (numD - 1).toString() + (numH - 1).toString().padStart(2, '0')
@@ -220,9 +231,10 @@ function dropEvent(e: any, dayId: any, hourId: any) {
 table {
   margin: 2rem auto;
   padding: 0.4rem 1.2rem;
-  border: 1px solid black;
+  border: 1px solid var(--detail);
+  border-radius: 0.8rem;
   border-spacing: 0;
-  width: 56%;
+  width: clamp(26rem, 70%, 96rem);
 }
 table thead,
 table tbody tr {

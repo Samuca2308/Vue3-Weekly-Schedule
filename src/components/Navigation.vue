@@ -3,10 +3,10 @@ import { ref } from 'vue';
 const emit = defineEmits(['change-theme', 'change-colors']);
 
 const colorsArr = [
-  { name: 'Asd', colors: ['#de7d14', '#de7d1464', '#bd357e', '#bd357e64'] },
-  { name: 'Def', colors: ['#81d022', '#81d02264', '#d89730', '#d8973064'] },
-  { name: 'Def', colors: ['#9b0b16', '#9b0b1664', '#837172', '#83717264'] },
-  { name: 'Def', colors: ['#1a868e', '#1a868e64', '#72704a', '#72704a64'] },
+  { name: 'Orange', colors: ['#de7d14', '#de7d1472', '#bd357e', '#bd357e72'] },
+  { name: 'Lime', colors: ['#81d022', '#81d02272', '#d89730', '#d8973072'] },
+  { name: 'Red', colors: ['#9b0b16', '#9b0b1672', '#837172', '#83717272'] },
+  { name: 'Blue', colors: ['#1a868e', '#1a868e72', '#72704a', '#72704a72'] },
 ];
 
 const themes = {
