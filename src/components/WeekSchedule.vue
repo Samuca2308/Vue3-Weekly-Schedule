@@ -103,9 +103,9 @@ function startArr() {
     }/${week.value[0].number()}`
   );
   const endDate = new Date(
-    `${props.date.getFullYear()}/${props.date.getMonth() + 1}/${week.value[
-      week.value.length - 1
-    ].number()}`
+    `${props.date.getFullYear()}/${props.date.getMonth() + 1}/${
+      week.value[week.value.length - 1].number() + 1
+    }`
   );
   curRecords.value = props.records
     ?.filter((rec: any) => {
@@ -114,11 +114,18 @@ function startArr() {
     .reduce(
       (pvel: any, el: any) => ({
         ...pvel,
-        [`${props.monday === true ? el.date.getDay() - 1 : el.date.getDay()}${
-          el.date.getMinutes() >= 30
-            ? 1 + el.date.getHours() * 2
-            : el.date.getHours() * 2
-        }`]: el,
+        [`${
+          props.monday === true
+            ? el.date.getDay() == 0
+              ? 6
+              : el.date.getDay() - 1
+            : el.date.getDay()
+        }${(el.date.getMinutes() >= 30
+          ? 1 + el.date.getHours() * 2
+          : el.date.getHours() * 2
+        )
+          .toString()
+          .padStart(2, '0')}`]: el,
       }),
       {}
     );
@@ -150,8 +157,8 @@ function dropEvent(e: any, dayId: any, hourId: any) {
 }
 
 function changeEvent(e: any, id: string) {
+  /* WIP Fix */
   curRecords.value![id].duration = e;
-  console.log(curRecords.value![id].duration);
 }
 </script>
 
@@ -174,7 +181,7 @@ function changeEvent(e: any, id: string) {
         </th>
       </tr>
     </thead>
-    <tbody :style="`/*height: ${props.size};*/`">
+    <tbody :style="`height: ${props.size};`">
       <tr :key="numH" v-for="numH in 48">
         <td class="hour">
           {{ numH % 2 == 1 ? hours[Math.ceil(numH / 2) - 1] : '' }}

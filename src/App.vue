@@ -2,7 +2,6 @@
   <div component type="theme" v-html="theme"></div>
   <Navigation @change-colors="onChangeColors" @change-theme="onChangeTheme" />
   <WeekSchedule
-    :weekArr="['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sab']"
     size="16rem"
     :records="records"
   />
