@@ -24,6 +24,10 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  minimal: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 const year = ref(props.date.getFullYear());
@@ -235,6 +239,7 @@ function changeEvent(e: any, id: string) {
                 curRecords[
                   (numD - 1).toString() + (numH - 1).toString().padStart(2, '0')
                 ],
+              minimal: props.minimal,
             }"
             :is="taskComponent"
           ></component>

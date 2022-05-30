@@ -4,6 +4,10 @@ import { computed, onBeforeUnmount, onMounted, Ref, ref } from 'vue';
 const emit = defineEmits(['duration-change']);
 const props = defineProps({
   element: Object,
+  minimal: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 const description = props.element!.description;
@@ -72,8 +76,10 @@ function func(e: MouseEvent) {
     @resize="resizeEvent"
     :style="`height: ${height}rem`"
   >
-    <p>{{ element.description }}</p>
-    <p>{{ `${startTime} - ${endTime}` }}</p>
+    <div v-if="props.minimal != true">
+      <p>{{ element.description }}</p>
+      <p>{{ `${startTime} - ${endTime}` }}</p>
+    </div>
   </article>
 </template>
 
@@ -102,7 +108,7 @@ article::before {
   width: 0.2rem;
   height: 100%;
 }
-article > p {
+article p {
   margin-block: 0 0.4rem;
 }
 </style>
