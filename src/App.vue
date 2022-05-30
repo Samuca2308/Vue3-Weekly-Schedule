@@ -1,10 +1,7 @@
 <template>
   <div component type="theme" v-html="theme"></div>
   <Navigation @change-colors="onChangeColors" @change-theme="onChangeTheme" />
-  <WeekSchedule
-    size="16rem"
-    :records="records"
-  />
+  <WeekSchedule size="16rem" :records="records" />
 </template>
 
 <script lang="ts" setup>
@@ -41,70 +38,47 @@ const theme = computed(() => {
 
 const records = [
   {
-    id: 0,
     description: 'lorem',
-    date: new Date('May 24, 2022 12:00:00'),
-    duration: '01:00',
+    date: new Date('May 30, 2022 12:00:00'),
+    duration: 2,
   },
   {
-    id: 1,
     description: 'ipsum',
-    date: new Date('May 22, 2022 13:00:00'),
-    duration: '01:30',
+    date: new Date('Jun 02, 2022 13:00:00'),
+    duration: 3,
   },
   {
-    id: 2,
     description: 'dolor',
     date: new Date('May 21, 2022 13:00:00'),
-    duration: '02:30',
+    duration: 5,
   },
+  { description: 'sit', date: new Date('May 26, 2022 13:00:00'), duration: 1 },
+  { description: 'amet', date: new Date('May 27, 2022 13:00:00'), duration: 4 },
   {
-    id: 3,
-    description: 'sit',
-    date: new Date('May 26, 2022 13:00:00'),
-    duration: '00:30',
-  },
-  {
-    id: 4,
-    description: 'amet',
-    date: new Date('May 27, 2022 13:00:00'),
-    duration: '02:00',
-  },
-  {
-    id: 5,
     description: 'consectetur',
     date: new Date('May 09, 2022 13:00:00'),
-    duration: '02:30',
+    duration: 5,
   },
   {
-    id: 6,
     description: 'adipisicing',
     date: new Date('May 28, 2022 13:00:00'),
-    duration: '01:00',
+    duration: 2,
   },
+  { description: 'elit', date: new Date('Apr 28, 2022 11:00:00'), duration: 2 },
   {
-    id: 7,
-    description: 'elit',
-    date: new Date('May 28, 2022 11:00:00'),
-    duration: '01:00',
-  },
-  {
-    id: 8,
     description: 'cumque',
-    date: new Date('May 18, 2022 13:00:00'),
-    duration: '03:00',
+    date: new Date('Apr 28, 2022 13:00:00'),
+    duration: 6,
   },
   {
-    id: 9,
     description: 'numquam',
-    date: new Date('May 25, 2022 14:00:00'),
-    duration: '02:00',
+    date: new Date('Apr 25, 2022 14:00:00'),
+    duration: 4,
   },
   {
-    id: 10,
     description: 'impedit',
     date: new Date('May 10, 2022 12:00:00'),
-    duration: '01:30',
+    duration: 3,
   },
 ];
 

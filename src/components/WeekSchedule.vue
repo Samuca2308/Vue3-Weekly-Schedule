@@ -26,21 +26,17 @@ const props = defineProps({
   },
 });
 
+const year = ref(props.date.getFullYear());
+const month = ref(props.date.getMonth() + 1);
+const monthProg = ref(1);
+
 const curRecords: Ref<any> = ref([]);
 
 const week = computed(() => {
   const curDate = props.date.getDate();
   const curDay = props.date.getDay();
-  const forMonthDays = new Date(
-    props.date.getFullYear(),
-    props.date.getMonth(),
-    0
-  ).getDate();
-  const curMonthDays = new Date(
-    props.date.getFullYear(),
-    props.date.getMonth() + 1,
-    0
-  ).getDate();
+  const forMonthDays = new Date(year.value, month.value - 1, 0).getDate();
+  const curMonthDays = new Date(year.value, month.value, 0).getDate();
 
   let arr = [];
   for (let i = 0; i < 7; i++) {
@@ -48,31 +44,42 @@ const week = computed(() => {
       ? arr.push({
           name: i == 6 ? props.weekArr[0] : props.weekArr[i + 1],
           number: () => {
-            let day =
-              curDay == 0 ? curDate + i - 6 : curDate - (curDay - 1) + i;
-            return day < 1
-              ? (day = day + forMonthDays)
-              : day > curMonthDays
-              ? (day = day - curMonthDays)
-              : day;
+            let day = extrCalc(
+              curDay == 0 ? curDate + i - 6 : curDate - (curDay - 1) + i,
+              curMonthDays,
+              forMonthDays
+            );
+            return day;
           },
           today: (i == 6 && curDay == 0) || i + 1 == curDay,
         })
       : arr.push({
           name: props.weekArr[i],
           number: () => {
-            let day = curDate - curDay + i;
-            return day < 1
-              ? (day = day + forMonthDays)
-              : day > curMonthDays
-              ? (day = day - curMonthDays)
-              : day;
+            let day = extrCalc(
+              curDate - curDay + i,
+              curMonthDays,
+              forMonthDays
+            );
+            return day;
           },
           today: i - curDay == 0,
         });
   }
   return arr;
 });
+
+function extrCalc(cur: any, min: any, max: any) {
+  if (cur < 1) {
+    cur = cur + max;
+    monthProg.value = 0;
+  } else if (cur > min) {
+    cur = cur - min;
+    monthProg.value = 2;
+  }
+
+  return cur;
+}
 
 const hours = computed(() => {
   let arr = [];
@@ -97,16 +104,20 @@ const hours = computed(() => {
 });
 
 function startArr() {
+  let initDay = week.value[0].number();
+  let finalDay = week.value[week.value.length - 1].number() + 1;
+
   const startDate = new Date(
-    `${props.date.getFullYear()}/${
-      props.date.getMonth() + 1
-    }/${week.value[0].number()}`
+    `${year.value}/${
+      finalDay < initDay && monthProg.value == 0 ? month.value - 1 : month.value
+    }/${initDay}`
   );
   const endDate = new Date(
-    `${props.date.getFullYear()}/${props.date.getMonth() + 1}/${
-      week.value[week.value.length - 1].number() + 1
-    }`
+    `${year.value}/${
+      finalDay < initDay && monthProg.value == 2 ? month.value + 1 : month.value
+    }/${finalDay}`
   );
+
   curRecords.value = props.records
     ?.filter((rec: any) => {
       return rec.date >= startDate && rec.date <= endDate;
@@ -143,15 +154,22 @@ function dragEvent(e: any, id: any) {
 
 function dropEvent(e: any, dayId: any, hourId: any) {
   const value = e.dataTransfer!.getData('eventValue');
+
   if (value) {
     const item: any = curRecords.value![value];
     item!.date = new Date(
-      `${props.date.getFullYear()}/${props.date.getMonth() + 1}/${week.value[
-        dayId - 1
-      ].number()}, ${Math.ceil(hourId / 2) - 1}:${
+      `${year.value}/${
+        monthProg.value == 2 && week.value[dayId - 1].number() < 7
+          ? month.value + 1
+          : monthProg.value == 0 && week.value[dayId - 1].number() > 21
+          ? month.value - 1
+          : month.value
+      }/${week.value[dayId - 1].number()}, ${Math.ceil(hourId / 2) - 1}:${
         hourId % 2 == 0 ? '30' : '00'
       }`
     );
+    console.log(item!.date);
+
     startArr();
   }
 }

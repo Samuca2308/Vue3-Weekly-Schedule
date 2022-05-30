@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onBeforeUnmount, onMounted, ref } from 'vue';
+import { computed, onBeforeUnmount, onMounted, Ref, ref } from 'vue';
 
 const emit = defineEmits(['duration-change']);
 const props = defineProps({
@@ -12,26 +12,21 @@ const startTime =
   ':' +
   props.element!.date.getMinutes().toString().padStart(2, '0');
 const endTime = computed(() => {
-  let hours =
-    props.element!.date.getHours() +
-    Number(props.element!.duration.slice(0, 2));
-  let minutes = (
-    props.element!.date.getMinutes() + Number(props.element!.duration.slice(3))
-  )
-    .toString()
-    .padStart(2, '0');
-  return `${minutes == 60 ? hours + 1 : hours}:${
-    minutes == 60 ? '00' : minutes
-  }`;
+  let forM = props.element!.date.getMinutes();
+  let h =
+    props.element!.date.getHours() + Math.floor(props.element!.duration / 2);
+  let m = props.element!.duration % 2 == 1 ? '30' : '00';
+  if (forM >= 30) {
+    m = props.element!.duration % 2 == 1 ? '00' : '30';
+    h = m == '30' ? h : h + 1;
+  }
+
+  return h + ':' + m;
 });
 const height = computed(() => {
-  return (
-    props.element!.duration.slice(0, 2) * 3.2 +
-    (props.element!.duration.slice(3) / 30) * 1.6 -
-    0.4
-  );
+  return props.element!.duration * 1.6 - 0.6;
 });
-const nDuration = ref('');
+const nDuration: Ref<number | null> = ref(null);
 const resize = ref(false);
 const observer = ref<MutationObserver | null>(null);
 const el = ref<HTMLElement | null>(null);
@@ -52,14 +47,9 @@ function initObserver() {
       if (mutation.type === 'attributes') {
         if (resize.value !== true) resize.value = true;
         let height = el.value?.style.height;
-        let minutes =
-          Math.round(
-            Number(height!.slice(0, height!.length - 2)) / rem / 1.6 + 0.2
-          ) * 30;
-        nDuration.value =
-          Math.floor(minutes / 60)
-            .toString()
-            .padStart(2, '0') + (minutes % 60 == 30 ? ':30' : ':00');
+        nDuration.value = Math.round(
+          Number(height!.slice(0, height!.length - 2)) / rem / 1.6
+        );
       }
     });
   });
@@ -83,9 +73,7 @@ function func(e: MouseEvent) {
     :style="`height: ${height}rem`"
   >
     <p>{{ element.description }}</p>
-    <p v-if="element.duration.slice(0, 2) > 0">
-      {{ `${startTime} - ${endTime}` }}
-    </p>
+    <p>{{ `${startTime} - ${endTime}` }}</p>
   </article>
 </template>
 
@@ -98,7 +86,7 @@ article {
   overflow: hidden;
   position: absolute;
   margin-inline: 0.1rem;
-  top: 0;
+  top: 0.2rem;
   border-radius: 0.2rem;
   left: 0;
   right: 0;
