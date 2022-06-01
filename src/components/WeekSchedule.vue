@@ -37,8 +37,8 @@ const monthProg = ref(1);
 const curRecords: Ref<any> = ref([]);
 
 /**
- * Creates array for week header,
- * consequently specifying values for the days being used in current week.
+ * Creates an array for the week header,
+ * consequently specifying values for the days being used in the current week.
  * Later to be referenced in startArr for filtering registers.
  */
 const week = computed(() => {
@@ -128,7 +128,7 @@ function startArr() {
     }/${finalDay}`
   );
 
-  // Filters records by current week and reduce them into an object with specific keys,
+  // Filters records by the current week and reduce them into an object with specific keys,
   // later used for rendering instances in the correct cell of the table.
   curRecords.value = props.records
     ?.filter((rec: any) => {
