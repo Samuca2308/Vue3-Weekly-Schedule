@@ -44,8 +44,7 @@ function changeColor(colors: any) {
 
 <template>
   <nav>
-    <a>Schedule</a>
-    <a>Info</a>
+    <a></a>
     <a @click="toggleModal">Theme</a>
   </nav>
   <dialog id="color-picker" class="color-picker">
@@ -82,6 +81,12 @@ nav > a {
   font-size: 1.1rem;
   cursor: pointer;
   transition: all 300ms ease-in-out;
+}
+nav > a:first-of-type {
+  flex: 3;
+}
+nav > a:nth-of-type(2) {
+  flex: 1;
 }
 nav > a:hover,
 nav > a:focus {

@@ -36,6 +36,11 @@ const monthProg = ref(1);
 
 const curRecords: Ref<any> = ref([]);
 
+/**
+ * Creates array for week header,
+ * consequently specifying values for the days being used in current week.
+ * Later to be referenced in startArr for filtering registers.
+ */
 const week = computed(() => {
   const curDate = props.date.getDate();
   const curDay = props.date.getDay();
@@ -73,6 +78,7 @@ const week = computed(() => {
   return arr;
 });
 
+// Used by week for returning day numbers and month progress.
 function extrCalc(cur: any, min: any, max: any) {
   if (cur < 1) {
     cur = cur + max;
@@ -122,6 +128,8 @@ function startArr() {
     }/${finalDay}`
   );
 
+  // Filters records by current week and reduce them into an object with specific keys,
+  // later used for rendering instances in the correct cell of the table.
   curRecords.value = props.records
     ?.filter((rec: any) => {
       return rec.date >= startDate && rec.date <= endDate;
@@ -159,7 +167,7 @@ function dragEvent(e: any, id: any) {
 function dropEvent(e: any, dayId: any, hourId: any) {
   const value = e.dataTransfer!.getData('eventValue');
 
-  if (value) {
+  if (value != null && value != undefined) {
     const item: any = curRecords.value![value];
     item!.date = new Date(
       `${year.value}/${
@@ -179,7 +187,8 @@ function dropEvent(e: any, dayId: any, hourId: any) {
 }
 
 function changeEvent(e: any, id: string) {
-  /* WIP Fix */
+  // Work in progress
+
   curRecords.value![id].duration = e;
 }
 </script>

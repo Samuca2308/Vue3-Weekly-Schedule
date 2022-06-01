@@ -61,7 +61,7 @@ function initObserver() {
   observer.value.observe(el.value!, { attributes: true });
 }
 
-function func(e: MouseEvent) {
+function onResizeEnd(e: MouseEvent) {
   if (resize.value === true) {
     emit('duration-change', nDuration.value);
     resize.value = false;
@@ -70,12 +70,7 @@ function func(e: MouseEvent) {
 </script>
 
 <template>
-  <article
-    @mouseup="func"
-    ref="el"
-    @resize="resizeEvent"
-    :style="`height: ${height}rem`"
-  >
+  <article @mouseup="onResizeEnd" ref="el" :style="`height: ${height}rem`">
     <div v-if="props.minimal != true">
       <p>{{ element.description }}</p>
       <p>{{ `${startTime} - ${endTime}` }}</p>

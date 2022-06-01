@@ -1,23 +1,17 @@
 <template>
   <div component type="theme" v-html="theme"></div>
-  <Navigation @change-colors="onChangeColors" @change-theme="onChangeTheme" />
-  <WeekSchedule size="16rem" :records="records" />
+  <TopBar @change-colors="onChangeColors" @change-theme="onChangeTheme" />
+  <WeekSchedule :minimal="windowWidth <= 700" size="16rem" :records="records" />
 </template>
 
 <script lang="ts" setup>
 import WeekSchedule from './components/WeekSchedule.vue';
-import Navigation from './components/Navigation.vue';
-import { ref, computed } from 'vue';
+import TopBar from './components/TopBar.vue';
+import { ref, computed, onMounted, onUnmounted } from 'vue';
 
 const primary = ref('#000');
-
-function onChangeColors(newcolors: any) {
-  colors.value = newcolors;
-}
-
-function onChangeTheme(pallete: any) {
-  theming.value = pallete;
-}
+const windowWidth = ref(window.innerWidth);
+const onWidthChange = () => (windowWidth.value = window.innerWidth);
 
 const colors = ref(['#de7d14', '#de7d1472', '#bd357e', '#bd357e72']);
 const theming = ref(['#fff', '#2c3e50']);
@@ -36,53 +30,61 @@ const theme = computed(() => {
     </style>`;
 });
 
+const today = new Date();
+
 const records = [
   {
     description: 'lorem',
-    date: new Date('May 30, 2022 12:00:00'),
+    date: new Date(today.getFullYear(), today.getMonth(), today.getDate(), 13),
     duration: 2,
   },
   {
     description: 'ipsum',
-    date: new Date('Jun 02, 2022 13:00:00'),
+    date: new Date(
+      today.getFullYear(),
+      today.getMonth(),
+      today.getDate() + 1,
+      13
+    ),
     duration: 3,
   },
   {
     description: 'dolor',
-    date: new Date('May 21, 2022 13:00:00'),
+    date: new Date(
+      today.getFullYear(),
+      today.getMonth(),
+      today.getDate() + 2,
+      13
+    ),
     duration: 5,
   },
-  { description: 'sit', date: new Date('May 26, 2022 13:00:00'), duration: 1 },
-  { description: 'amet', date: new Date('May 27, 2022 13:00:00'), duration: 4 },
   {
-    description: 'consectetur',
-    date: new Date('May 09, 2022 13:00:00'),
+    description: 'sit',
+    date: new Date(
+      today.getFullYear(),
+      today.getMonth(),
+      today.getDate() - 1,
+      13
+    ),
     duration: 5,
   },
   {
-    description: 'adipisicing',
-    date: new Date('May 28, 2022 13:00:00'),
-    duration: 2,
-  },
-  { description: 'elit', date: new Date('Apr 28, 2022 11:00:00'), duration: 2 },
-  {
-    description: 'cumque',
-    date: new Date('Apr 28, 2022 13:00:00'),
-    duration: 6,
-  },
-  {
-    description: 'numquam',
-    date: new Date('Apr 25, 2022 14:00:00'),
-    duration: 4,
-  },
-  {
-    description: 'impedit',
-    date: new Date('May 10, 2022 12:00:00'),
+    description: 'amet',
+    date: new Date(today.getFullYear(), today.getMonth(), today.getDate(), 14),
     duration: 3,
   },
 ];
 
-const workHours = ['11:00', '12:00', '13:00', '14:00', '15:00'];
+function onChangeColors(newcolors: any) {
+  colors.value = newcolors;
+}
+
+function onChangeTheme(pallete: any) {
+  theming.value = pallete;
+}
+
+onMounted(() => window.addEventListener('resize', onWidthChange));
+onUnmounted(() => window.removeEventListener('resize', onWidthChange));
 </script>
 
 <style>
