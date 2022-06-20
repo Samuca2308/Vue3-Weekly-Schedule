@@ -1,31 +1,60 @@
 <template>
   <div component type="theme" v-html="theme"></div>
-  <TopBar @change-colors="onChangeColors" @change-theme="onChangeTheme" />
-  <WeekSchedule :minimal="windowWidth <= 700" size="16rem" :records="records" />
+  <main>
+    <aside class="sidebar">
+      <button @click="showSettings = !showSettings" class="accordion">
+        Settings
+      </button>
+      <div
+        class="panel"
+        :style="`transition: all 200ms ease-in-out; margin-top: 4rem; ${
+          showSettings
+            ? 'transform: translateY(0)'
+            : 'transform: translateY(calc(-100% - 4rem))'
+        }`"
+      >
+        <Settings
+          :monday="mondayBool"
+          :militaryTime="militaryBool"
+          @change-opt="onChangeOption"
+          @change-colors="onChangeColors"
+          @change-theme="onChangeTheme"
+        />
+      </div>
+    </aside>
+    <WeekSchedule
+      :monday="mondayBool"
+      :militaryTime="militaryBool"
+      :minimal="windowWidth <= 700"
+      size="30rem"
+      :records="records"
+    />
+  </main>
 </template>
 
 <script lang="ts" setup>
 import WeekSchedule from './components/WeekSchedule.vue';
-import TopBar from './components/TopBar.vue';
+import Settings from './components/Settings.vue';
 import { ref, computed, onMounted, onUnmounted } from 'vue';
 
-const primary = ref('#000');
 const windowWidth = ref(window.innerWidth);
+const militaryBool = ref(false);
+const mondayBool = ref(false);
+const showSettings = ref(false);
 const onWidthChange = () => (windowWidth.value = window.innerWidth);
 
-const colors = ref(['#de7d14', '#de7d1472', '#bd357e', '#bd357e72']);
-const theming = ref(['#fff', '#2c3e50']);
+const colors = ref(['#de7d14', '#bd357e']);
+const theming = ref(['#f5f5f5', '#fff', '#2c3e50']);
 
 const theme = computed(() => {
   return `
     <style>
       :root {
         --primary: ${colors.value[0]};
-        --primary-light: ${colors.value[1]};
-        --secondary: ${colors.value[2]};
-        --secondary-light: ${colors.value[3]};
-        --background: ${theming.value[0]};
-        --detail: ${theming.value[1]};
+        --secondary: ${colors.value[1]};
+        --canvas: ${theming.value[0]};
+        --background: ${theming.value[1]};
+        --detail: ${theming.value[2]};
       }
     </style>`;
 });
@@ -83,6 +112,12 @@ function onChangeTheme(pallete: any) {
   theming.value = pallete;
 }
 
+function onChangeOption(optNum: any) {
+  optNum == 0
+    ? (mondayBool.value = !mondayBool.value)
+    : (militaryBool.value = !militaryBool.value);
+}
+
 onMounted(() => window.addEventListener('resize', onWidthChange));
 onUnmounted(() => window.removeEventListener('resize', onWidthChange));
 </script>
@@ -90,13 +125,48 @@ onUnmounted(() => window.removeEventListener('resize', onWidthChange));
 <style>
 body {
   margin: 0;
-  background-color: var(--background);
+  background-color: var(--canvas);
   color: var(--detail);
+}
+
+main {
+  display: flex;
 }
 
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+.sidebar {
+  position: relative;
+  top: 0;
+  height: 100vh;
+  width: 20rem;
+  background-color: var(--background);
+  box-shadow: 0 0 0.2rem 0.3rem #00000008;
+}
+
+.accordion {
+  position: absolute;
+  z-index: 1;
+  cursor: pointer;
+  padding: 18px;
+  width: 100%;
+  text-align: left;
+  border: none;
+  background-color: var(--background);
+  color: var(--detail);
+}
+
+.accordion::before {
+  position: absolute;
+  content: '';
+  top: 0;
+  left: 4%;
+  width: 92%;
+  height: 100%;
+  border-bottom: 0.16rem solid var(--primary);
 }
 </style>

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, Ref, ref } from 'vue';
+import { computed, onMounted, Ref, ref, watch } from 'vue';
 import taskComponent from './TaskComponent.vue';
 
 const props = defineProps({
@@ -29,6 +29,13 @@ const props = defineProps({
     default: false,
   },
 });
+
+watch(
+  () => props.monday,
+  () => {
+    startArr();
+  }
+);
 
 const year = ref(props.date.getFullYear());
 const month = ref(props.date.getMonth() + 1);
@@ -268,11 +275,13 @@ function changeEvent(e: any, id: string) {
   padding: 0.2rem;
 }
 table {
-  margin: 2rem auto;
+  margin: 4rem auto;
+  height: min-content;
   padding: 0.4rem 1.2rem;
-  border: 1px solid var(--detail);
   border-radius: 0.8rem;
   border-spacing: 0;
+  background-color: var(--background);
+  box-shadow: 0 0.2rem 0.2rem 0.1rem #00000008;
   width: clamp(26rem, 70%, 96rem);
 }
 table thead,

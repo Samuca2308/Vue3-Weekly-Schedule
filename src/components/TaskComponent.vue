@@ -61,6 +61,10 @@ function initObserver() {
   observer.value.observe(el.value!, { attributes: true });
 }
 
+function onClick(e: MouseEvent) {
+  console.log(e);
+}
+
 function onResizeEnd(e: MouseEvent) {
   if (resize.value === true) {
     emit('duration-change', nDuration.value);
@@ -70,7 +74,12 @@ function onResizeEnd(e: MouseEvent) {
 </script>
 
 <template>
-  <article @mouseup="onResizeEnd" ref="el" :style="`height: ${height}rem`">
+  <article
+    @click="onClick"
+    @mouseup="onResizeEnd"
+    ref="el"
+    :style="`height: ${height}rem`"
+  >
     <div v-if="props.minimal != true">
       <p>{{ element.description }}</p>
       <p>{{ `${startTime} - ${endTime}` }}</p>
@@ -91,9 +100,22 @@ article {
   border-radius: 0.2rem;
   left: 0;
   right: 0;
-  background-color: var(--primary-light);
+  background-color: var(--primary);
 }
+
 article::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--background);
+  opacity: 0.56;
+  mix-blend-mode: luminosity;
+}
+
+article::after {
   content: '';
   position: absolute;
   top: 0;
@@ -103,6 +125,11 @@ article::before {
   width: 0.2rem;
   height: 100%;
 }
+
+article > div {
+  position: absolute;
+}
+
 article p {
   margin-block: 0 0.4rem;
 }
