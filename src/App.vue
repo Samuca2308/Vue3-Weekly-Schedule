@@ -25,7 +25,7 @@
     <WeekSchedule
       :monday="mondayBool"
       :militaryTime="militaryBool"
-      :minimal="windowWidth <= 700"
+      :minimal="windowWidth <= 900"
       size="30rem"
       :records="records"
     />
@@ -143,7 +143,7 @@ main {
   position: relative;
   top: 0;
   height: 100vh;
-  width: 20rem;
+  width: clamp(12rem, 20%, 20rem);
   background-color: var(--background);
   box-shadow: 0 0 0.2rem 0.3rem #00000008;
 }
