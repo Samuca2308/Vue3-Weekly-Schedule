@@ -22,7 +22,7 @@
           @change-theme="onChangeTheme"
         />
       </div>
-      <div v-if="curEvent !== null">
+      <div class="event-form" v-if="curEvent !== null">
         <h2>Event Information</h2>
         <form>
           <label for="description">Event description</label>
@@ -159,23 +159,28 @@ main {
   display: flex;
 }
 
-label {
+.event-form h2 {
+  margin-block: 0.8rem;
+  margin-left: 1.6rem;
+}
+
+.event-form label {
   font-size: 0.8rem;
-  margin: 0.2rem 2.2rem;
+  margin: 0.2rem 2rem;
   position: absolute;
 }
 
-input {
+.event-form input {
   position: relative;
   background-color: var(--background);
   border: 0.1rem solid var(--detail);
   color: var(--detail);
-  border-radius: 0.8rem;
+  border-radius: 0.6rem;
   margin: 1.2rem 2rem;
   padding: 0.2rem 0.4rem;
 }
 
-input:focus {
+.event-form input:focus {
   outline: none;
   border: 0.1rem solid var(--secondary);
 }
