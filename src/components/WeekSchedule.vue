@@ -2,6 +2,7 @@
 import { computed, onMounted, Ref, ref, watch } from 'vue';
 import taskComponent from './TaskComponent.vue';
 
+const emit = defineEmits(['event-select']);
 const props = defineProps({
   records: Array,
   date: {
@@ -195,8 +196,13 @@ function dropEvent(e: any, dayId: any, hourId: any) {
 
 function changeEvent(e: any, id: string) {
   // Work in progress
+  console.log('B');
 
   curRecords.value![id].duration = e;
+}
+
+function selectEvent(id: string) {
+  emit('event-select', curRecords.value![id]);
 }
 </script>
 
@@ -242,6 +248,11 @@ function changeEvent(e: any, id: string) {
             @duration-change="
               changeEvent(
                 $event,
+                (numD - 1).toString() + (numH - 1).toString().padStart(2, '0')
+              )
+            "
+            @event-select="
+              selectEvent(
                 (numD - 1).toString() + (numH - 1).toString().padStart(2, '0')
               )
             "

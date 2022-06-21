@@ -14,6 +14,7 @@
         }`"
       >
         <Settings
+          v-if="showSettings === true"
           :monday="mondayBool"
           :militaryTime="militaryBool"
           @change-opt="onChangeOption"
@@ -21,11 +22,24 @@
           @change-theme="onChangeTheme"
         />
       </div>
+      <div v-if="curEvent !== null">
+        <h2>Event Information</h2>
+        <form>
+          <label for="description">Event description</label>
+          <input
+            v-model="curEvent.description"
+            name="description"
+            type="text"
+          />
+          <span></span>
+        </form>
+      </div>
     </aside>
     <WeekSchedule
       :monday="mondayBool"
       :militaryTime="militaryBool"
       :minimal="windowWidth <= 900"
+      @event-select="selectEvent"
       size="30rem"
       :records="records"
     />
@@ -42,6 +56,7 @@ const militaryBool = ref(false);
 const mondayBool = ref(false);
 const showSettings = ref(false);
 const onWidthChange = () => (windowWidth.value = window.innerWidth);
+const curEvent: Ref<Object | null> = ref(null);
 
 const colors = ref(['#de7d14', '#bd357e']);
 const theming = ref(['#f5f5f5', '#fff', '#2c3e50']);
@@ -118,11 +133,22 @@ function onChangeOption(optNum: any) {
     : (militaryBool.value = !militaryBool.value);
 }
 
+function selectEvent(ev: Object) {
+  curEvent.value = ev;
+}
+
 onMounted(() => window.addEventListener('resize', onWidthChange));
 onUnmounted(() => window.removeEventListener('resize', onWidthChange));
 </script>
 
 <style>
+@keyframes blink {
+  to {
+    transform: scale(4);
+    opacity: 0;
+  }
+}
+
 body {
   margin: 0;
   background-color: var(--canvas);
@@ -131,6 +157,27 @@ body {
 
 main {
   display: flex;
+}
+
+label {
+  font-size: 0.8rem;
+  margin: 0.2rem 2.2rem;
+  position: absolute;
+}
+
+input {
+  position: relative;
+  background-color: var(--background);
+  border: 0.1rem solid var(--detail);
+  color: var(--detail);
+  border-radius: 0.8rem;
+  margin: 1.2rem 2rem;
+  padding: 0.2rem 0.4rem;
+}
+
+input:focus {
+  outline: none;
+  border: 0.1rem solid var(--secondary);
 }
 
 #app {

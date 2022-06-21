@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, onMounted, Ref, ref } from 'vue';
 
-const emit = defineEmits(['duration-change']);
+const emit = defineEmits(['duration-change', 'event-select']);
 const props = defineProps({
   element: Object,
   minimal: {
@@ -51,9 +51,13 @@ function initObserver() {
       if (mutation.type === 'attributes') {
         if (resize.value !== true) resize.value = true;
         let height = el.value?.style.height;
-        nDuration.value = Math.round(
-          Number(height!.slice(0, height!.length - 2)) / rem / 1.6
-        );
+        height!.slice(height!.length - 2) !== 'em'
+          ? (nDuration.value = Math.round(
+              Number(height!.slice(0, height!.length - 2)) / rem / 1.6
+            ))
+          : (nDuration.value = Math.round(
+              Number(height!.slice(0, height!.length - 3)) / 1.6
+            ));
       }
     });
   });
@@ -62,13 +66,27 @@ function initObserver() {
 }
 
 function onClick(e: MouseEvent) {
-  console.log(e);
+  var elements = document.getElementsByClassName('ripple');
+  while (elements[0]) {
+    elements[0].parentNode.removeChild(elements[0]);
+  }
+
+  emit('event-select');
+
+  let ripple = document.createElement('span');
+  ripple.setAttribute('class', 'ripple');
+  let bounds = event.target.getBoundingClientRect();
+
+  ripple.style.top = event.clientY - bounds.top + 'px';
+  ripple.style.left = event.clientX - bounds.left + 'px';
+  el.value!.appendChild(ripple);
 }
 
 function onResizeEnd(e: MouseEvent) {
+  console.log(resize.value);
   if (resize.value === true) {
-    emit('duration-change', nDuration.value);
     resize.value = false;
+    emit('duration-change', nDuration.value);
   }
 }
 </script>
@@ -88,6 +106,18 @@ function onResizeEnd(e: MouseEvent) {
 </template>
 
 <style scoped>
+::v-global(.ripple) {
+  position: absolute;
+  border-radius: 50%;
+  height: 3rem;
+  width: 3rem;
+  transform: scale(0);
+  animation: blink linear 300ms;
+  opacity: 0.26;
+  background-color: white;
+  box-shadow: 0 0 0.6rem 0.2rem var(--secondary);
+}
+
 article {
   cursor: pointer;
   padding: 0.2rem 0.4rem;
