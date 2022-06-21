@@ -8,6 +8,7 @@ Planned:
 
 - Concurrent events;
 - Adding, and removing events in demo;
+- Responsive design;
 
 Known problems:
 
