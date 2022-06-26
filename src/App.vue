@@ -172,6 +172,7 @@ main {
 
 .event-form input {
   position: relative;
+  width: clamp(6rem, 12%, 18rem);
   background-color: var(--background);
   border: 0.1rem solid var(--detail);
   color: var(--detail);
