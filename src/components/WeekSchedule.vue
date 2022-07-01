@@ -281,9 +281,9 @@ function selectEvent(id: string) {
   color: var(--primary);
 }
 .hour {
-  width: 3.6rem;
+  text-align: end;
   font-size: 0.84rem;
-  padding: 0.2rem;
+  padding-inline: 0.2rem;
 }
 table {
   margin: 4rem auto;
@@ -341,5 +341,10 @@ table tbody tr:nth-child(2n) td:not(:first-child) {
 }
 table tbody tr:last-child td:not(:first-child) {
   border-bottom: var(--primary-border);
+}
+
+@media (max-width: 480px) {
+  .hour {
+  }
 }
 </style>
