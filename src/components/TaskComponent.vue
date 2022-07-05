@@ -75,15 +75,14 @@ function onClick(e: MouseEvent) {
 
   let ripple = document.createElement('span');
   ripple.setAttribute('class', 'ripple');
-  let bounds = event.target.getBoundingClientRect();
+  let bounds = e.target.getBoundingClientRect();
 
-  ripple.style.top = event.clientY - bounds.top + 'px';
-  ripple.style.left = event.clientX - bounds.left + 'px';
+  ripple.style.top = e.clientY - bounds.top + 'px';
+  ripple.style.left = e.clientX - bounds.left + 'px';
   el.value!.appendChild(ripple);
 }
 
 function onResizeEnd(e: MouseEvent) {
-  console.log(resize.value);
   if (resize.value === true) {
     resize.value = false;
     emit('duration-change', nDuration.value);
@@ -111,7 +110,7 @@ function onResizeEnd(e: MouseEvent) {
   border-radius: 50%;
   height: 3rem;
   width: 3rem;
-  transform: scale(0);
+  transform: translate(-1.5rem, -1.5rem) scale(0);
   animation: blink linear 300ms;
   opacity: 0.26;
   background-color: white;

@@ -188,7 +188,6 @@ function dropEvent(e: any, dayId: any, hourId: any) {
         hourId % 2 == 0 ? '30' : '00'
       }`
     );
-    console.log(item!.date);
 
     startArr();
   }
@@ -196,7 +195,6 @@ function dropEvent(e: any, dayId: any, hourId: any) {
 
 function changeEvent(e: any, id: string) {
   // Work in progress
-  console.log('B');
 
   curRecords.value![id].duration = e;
 }

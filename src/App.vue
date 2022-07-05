@@ -144,7 +144,7 @@ onUnmounted(() => window.removeEventListener('resize', onWidthChange));
 <style>
 @keyframes blink {
   to {
-    transform: scale(4);
+    transform: translate(-1.5rem, -1.5rem) scale(4);
     opacity: 0;
   }
 }
