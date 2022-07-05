@@ -44,6 +44,8 @@ const monthProg = ref(1);
 
 const curRecords: Ref<any> = ref([]);
 
+const dropMode = ref(false);
+
 /**
  * Creates an array for the week header,
  * consequently specifying values for the days being used in the current week.
@@ -170,6 +172,9 @@ function dragEvent(e: any, id: any) {
   e.dataTransfer!.dropEffect = 'move';
   e.dataTransfer!.effectAllowed = 'move';
   e.dataTransfer!.setData('eventValue', id);
+  setTimeout(() => {
+    dropMode.value = true;
+  }, 2);
 }
 
 function dropEvent(e: any, dayId: any, hourId: any) {
@@ -228,13 +233,7 @@ function selectEvent(id: string) {
         <td class="hour">
           {{ numH % 2 == 1 ? hours[Math.ceil(numH / 2) - 1] : '' }}
         </td>
-        <td
-          :key="numD"
-          v-for="numD in 7"
-          @drop.prevent="dropEvent($event, numD, numH)"
-          @dragenter.prevent
-          @dragover.prevent
-        >
+        <td :key="numD" v-for="numD in 7">
           <component
             draggable="true"
             @dragstart="
@@ -243,6 +242,7 @@ function selectEvent(id: string) {
                 (numD - 1).toString() + (numH - 1).toString().padStart(2, '0')
               )
             "
+            @dragend="dropMode = false"
             @duration-change="
               changeEvent(
                 $event,
@@ -268,6 +268,13 @@ function selectEvent(id: string) {
             }"
             :is="taskComponent"
           ></component>
+          <div
+            class="drop-area"
+            v-if="dropMode == true"
+            @drop.prevent="dropEvent($event, numD, numH)"
+            @dragenter.prevent
+            @dragover.prevent
+          ></div>
         </td>
       </tr>
     </tbody>
@@ -278,11 +285,21 @@ function selectEvent(id: string) {
 .today {
   color: var(--primary);
 }
+
 .hour {
   text-align: end;
   font-size: 0.84rem;
   padding-inline: 0.2rem;
 }
+
+.drop-area {
+  position: absolute;
+  transform: translateY(-50%);
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
 table {
   margin: 4rem auto;
   height: min-content;
