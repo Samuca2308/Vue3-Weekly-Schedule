@@ -163,12 +163,17 @@ function refreshArr(sourceArr: any) {
         let conId = sortedArr.value.indexOf(concurrent);
         sortedArr.value[conId] = {
           ...concurrent,
+          flag: concurrent.flag ? concurrent.flag + 1 : 2,
+        };
+        sortedArr.value[sortedArr.value.indexOf(el)] = {
+          ...el,
           flag: concurrent.flag ? concurrent.flag + 1 : 1,
         };
       }
     }
   });
   curRecords.value = sortedArr.value;
+  console.log(curRecords.value);
 }
 
 function calcCellId(date) {
@@ -344,7 +349,6 @@ table thead th {
 }
 table thead th:first-of-type {
   cursor: default;
-  width: 4rem;
 }
 table thead th h3 {
   margin: 0;
@@ -381,8 +385,19 @@ table tbody tr:last-child td:not(:first-child) {
   border-bottom: var(--primary-border);
 }
 
-@media (max-width: 480px) {
+@media (max-width: 800px) {
+  table {
+    padding: 0.4rem 0.2rem;
+  }
+  tbody tr {
+    position: relative;
+  }
   .hour {
+    position: absolute;
+    top: 0.2rem;
+    right: 100%;
+    z-index: 1;
+    transform: translateX(100%);
   }
 }
 </style>
