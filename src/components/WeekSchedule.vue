@@ -173,7 +173,6 @@ function refreshArr(sourceArr: any) {
     }
   });
   curRecords.value = sortedArr.value;
-  console.log(curRecords.value);
 }
 
 function calcCellId(date) {

@@ -8,13 +8,6 @@
       class="sidebar-backdrop"
     ></div>
     <aside v-show="windowWidth >= 800 || showSidebar" class="sidebar">
-      <button
-        @click="showSidebar = false"
-        style="text-align: end"
-        class="btn opt"
-      >
-        X
-      </button>
       <button @click="showSettings = !showSettings" class="btn accordion">
         Settings
       </button>
@@ -255,10 +248,6 @@ main {
     height: 100%;
     background: var(--canvas);
     opacity: 0.4;
-  }
-
-  .accordion {
-    top: 3.2rem;
   }
 
   .opt {
