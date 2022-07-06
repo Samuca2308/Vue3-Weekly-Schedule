@@ -115,9 +115,15 @@ function onResizeEnd(e: MouseEvent) {
     @mouseup="onResizeEnd"
     ref="el"
     :style="`height: ${height}rem`"
+    :class="
+      props.element.flag == 1
+        ? 'flag-one'
+        : props.element.flag == 2
+        ? 'flag-two'
+        : ''
+    "
   >
     <div v-if="props.minimal != true">
-      {{ props.element.flag }}
       <p>{{ element.description }}</p>
       <p>
         {{
@@ -156,6 +162,20 @@ article {
   left: 0;
   right: 0;
   background-color: var(--primary);
+}
+
+.flag-one {
+  width: 45%;
+}
+
+.flag-two {
+  background-color: var(--secondary);
+  margin-left: calc(50% - 0.1rem);
+  width: 40%;
+}
+
+.flag-two::after {
+  background-color: var(--secondary);
 }
 
 article::before {
