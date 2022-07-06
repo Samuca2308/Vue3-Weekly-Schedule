@@ -42,6 +42,7 @@ const year = ref(props.date.getFullYear());
 const month = ref(props.date.getMonth() + 1);
 const monthProg = ref(1);
 
+const sortedArr: Ref<any> = ref([]);
 const curRecords: Ref<any> = ref([]);
 
 const dropMode = ref(false);
@@ -138,30 +139,48 @@ function startArr() {
     }/${finalDay}`
   );
 
-  // Filters records by the current week and reduce them into an object with specific keys,
-  // later used for rendering instances in the correct cell of the table.
-  curRecords.value = props.records
-    ?.filter((rec: any) => {
-      return rec.date >= startDate && rec.date <= endDate;
-    })
-    .reduce(
-      (pvel: any, el: any) => ({
-        ...pvel,
-        [`${
-          props.monday === true
-            ? el.date.getDay() == 0
-              ? 6
-              : el.date.getDay() - 1
-            : el.date.getDay()
-        }${(el.date.getMinutes() >= 30
-          ? 1 + el.date.getHours() * 2
-          : el.date.getHours() * 2
-        )
-          .toString()
-          .padStart(2, '0')}`]: el,
-      }),
-      {}
-    );
+  refreshArr(props.records);
+}
+
+function refreshArr(sourceArr: any) {
+  sourceArr.forEach((object) => {
+    delete object['cell'];
+    delete object['flag'];
+  });
+  sortedArr.value = sourceArr
+    .sort((a, b) => a.date - b.date)
+    .map((el) => {
+      let cellId = calcCellId(el.date);
+      return { cell: cellId, ...el };
+    });
+  sortedArr.value.forEach((el) => {
+    let cellId = calcCellId(el.date);
+    for (let i = 0; i < el.duration; i++) {
+      let concurrent = sortedArr.value.find(
+        (conEl) => conEl != el && conEl.cell == Number(cellId) + i
+      );
+      if (concurrent != null) {
+        let conId = sortedArr.value.indexOf(concurrent);
+        sortedArr.value[conId] = {
+          ...concurrent,
+          flag: concurrent.flag ? concurrent.flag + 1 : 1,
+        };
+      }
+    }
+  });
+  curRecords.value = sortedArr.value;
+}
+
+function calcCellId(date) {
+  let daySection =
+    props.monday === true
+      ? date.getDay() == 0
+        ? 6
+        : date.getDay() - 1
+      : date.getDay();
+  let hourSection =
+    date.getMinutes() >= 30 ? 1 + date.getHours() * 2 : date.getHours() * 2;
+  return `${daySection}${hourSection.toString().padStart(2, '0')}`;
 }
 
 onMounted(() => {
@@ -181,7 +200,7 @@ function dropEvent(e: any, dayId: any, hourId: any) {
   const value = e.dataTransfer!.getData('eventValue');
 
   if (value != null && value != undefined) {
-    const item: any = curRecords.value![value];
+    const item: any = sortedArr.value!.find((el) => el.cell == value);
     item!.date = new Date(
       `${year.value}/${
         monthProg.value == 2 && week.value[dayId - 1].number() < 7
@@ -194,18 +213,19 @@ function dropEvent(e: any, dayId: any, hourId: any) {
       }`
     );
 
-    startArr();
+    refreshArr(curRecords.value!);
   }
 }
 
 function changeEvent(e: any, id: string) {
-  // Work in progress
-
-  curRecords.value![id].duration = e;
+  curRecords.value!.find((el) => el.cell == id).duration = e;
 }
 
 function selectEvent(id: string) {
-  emit('event-select', curRecords.value![id]);
+  emit(
+    'event-select',
+    curRecords.value!.find((el) => el.cell == id)
+  );
 }
 </script>
 
@@ -255,15 +275,18 @@ function selectEvent(id: string) {
               )
             "
             v-if="
-              curRecords[
-                (numD - 1).toString() + (numH - 1).toString().padStart(2, '0')
-              ]
+              curRecords.find(
+                (el) =>
+                  el.cell ==
+                  (numD - 1).toString() + (numH - 1).toString().padStart(2, '0')
+              ) != null
             "
             v-bind="{
-              element:
-                curRecords[
+              element: curRecords.find(
+                (el) =>
+                  el.cell ==
                   (numD - 1).toString() + (numH - 1).toString().padStart(2, '0')
-                ],
+              ),
               minimal: props.minimal,
             }"
             :is="taskComponent"

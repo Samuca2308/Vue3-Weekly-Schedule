@@ -11,6 +11,8 @@ const props = defineProps({
 });
 
 const description = props.element!.description;
+const flag = props.element!.flag;
+
 const startTime =
   props.element!.date.getHours() +
   ':' +
@@ -100,6 +102,7 @@ function onResizeEnd(e: MouseEvent) {
     <div v-if="props.minimal != true">
       <p>{{ element.description }}</p>
       <p>{{ `${startTime} - ${endTime}` }}</p>
+      {{ flag }}
     </div>
   </article>
 </template>

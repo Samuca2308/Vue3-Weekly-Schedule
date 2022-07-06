@@ -80,7 +80,7 @@ const records = [
   {
     description: 'lorem',
     date: new Date(today.getFullYear(), today.getMonth(), today.getDate(), 13),
-    duration: 2,
+    duration: 4,
   },
   {
     description: 'ipsum',
