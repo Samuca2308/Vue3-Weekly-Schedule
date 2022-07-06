@@ -34,7 +34,7 @@ const props = defineProps({
 watch(
   () => props.monday,
   () => {
-    startArr();
+    refreshArr(curRecords.value!);
   }
 );
 
