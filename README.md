@@ -6,9 +6,7 @@ Simple Weekly Schedule Component made from scratch using Vue 3 alongside typescr
 
 Planned:
 
-- Concurrent events;
-- Adding, and removing events in demo;
-- Responsive design;
+- Adding and removing events in demo;
 
 Known problems:
 
