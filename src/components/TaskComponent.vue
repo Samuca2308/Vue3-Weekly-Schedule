@@ -8,11 +8,16 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  militaryTime: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 const description = props.element!.description;
+
 const startTime =
-  props.element!.date.getHours() +
+  props.element!.date.getHours().toString().padStart(2, '0') +
   ':' +
   props.element!.date.getMinutes().toString().padStart(2, '0');
 const endTime = computed(() => {
@@ -25,7 +30,7 @@ const endTime = computed(() => {
     h = m == '30' ? h : h + 1;
   }
 
-  return h + ':' + m;
+  return h.toString().padStart(2, '0') + ':' + m;
 });
 const height = computed(() => {
   return props.element!.duration * 1.6 - 0.6;
@@ -42,6 +47,20 @@ onMounted(() => {
 onBeforeUnmount(() => {
   if (observer.value != null) observer.value.disconnect();
 });
+
+function convertTime(time) {
+  let hours = Number(time.slice(0, 2));
+  let minutes = time.slice(3);
+
+  return (
+    (hours == 0 ? 12 : hours > 12 ? Number(hours) - 12 : hours)
+      .toString()
+      .padStart(2, '0') +
+    ':' +
+    minutes +
+    (hours > 11 ? ' PM' : ' AM')
+  );
+}
 
 function initObserver() {
   const rem = parseInt(getComputedStyle(document.documentElement).fontSize);
@@ -96,10 +115,23 @@ function onResizeEnd(e: MouseEvent) {
     @mouseup="onResizeEnd"
     ref="el"
     :style="`height: ${height}rem`"
+    :class="
+      props.element.flag == 1
+        ? 'flag-one'
+        : props.element.flag == 2
+        ? 'flag-two'
+        : ''
+    "
   >
     <div v-if="props.minimal != true">
       <p>{{ element.description }}</p>
-      <p>{{ `${startTime} - ${endTime}` }}</p>
+      <p>
+        {{
+          `${props.militaryTime ? startTime : convertTime(startTime)} - ${
+            props.militaryTime ? endTime : convertTime(endTime)
+          }`
+        }}
+      </p>
     </div>
   </article>
 </template>
@@ -130,6 +162,20 @@ article {
   left: 0;
   right: 0;
   background-color: var(--primary);
+}
+
+.flag-one {
+  width: 45%;
+}
+
+.flag-two {
+  background-color: var(--secondary);
+  margin-left: calc(50% - 0.1rem);
+  width: 40%;
+}
+
+.flag-two::after {
+  background-color: var(--secondary);
 }
 
 article::before {
