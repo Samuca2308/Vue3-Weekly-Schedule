@@ -1,15 +1,28 @@
 <template>
   <div component type="theme" v-html="theme"></div>
   <main>
-    <aside class="sidebar">
-      <button @click="showSettings = !showSettings" class="accordion">
+    <button @click="showSidebar = !showSidebar" class="btn opt">Menu</button>
+    <div
+      v-show="showSidebar"
+      @click="showSidebar = false"
+      class="sidebar-backdrop"
+    ></div>
+    <aside v-show="windowWidth >= 800 || showSidebar" class="sidebar">
+      <button
+        @click="showSidebar = false"
+        style="text-align: end"
+        class="btn opt"
+      >
+        X
+      </button>
+      <button @click="showSettings = !showSettings" class="btn accordion">
         Settings
       </button>
       <div
         class="panel"
         :style="`transition: all 200ms ease-in-out; margin-top: 4rem; ${
           showSettings
-            ? 'transform: translateY(0)'
+            ? 'transform: translateY()'
             : 'transform: translateY(calc(-100% - 4rem))'
         }`"
       >
@@ -38,7 +51,7 @@
     <WeekSchedule
       :monday="mondayBool"
       :militaryTime="militaryBool"
-      :minimal="windowWidth <= 900"
+      :minimal="windowWidth <= 800"
       @event-select="selectEvent"
       size="30rem"
       :records="records"
@@ -54,6 +67,7 @@ import { ref, computed, onMounted, onUnmounted } from 'vue';
 const windowWidth = ref(window.innerWidth);
 const militaryBool = ref(false);
 const mondayBool = ref(false);
+const showSidebar = ref(false);
 const showSettings = ref(false);
 const onWidthChange = () => (windowWidth.value = window.innerWidth);
 const curEvent: Ref<Object | null> = ref(null);
@@ -194,14 +208,13 @@ main {
 
 .sidebar {
   position: relative;
-  top: 0;
   height: 100vh;
   width: clamp(12rem, 20%, 20rem);
   background-color: var(--background);
   box-shadow: 0 0 0.2rem 0.3rem #00000008;
 }
 
-.accordion {
+.btn {
   position: absolute;
   z-index: 1;
   cursor: pointer;
@@ -213,6 +226,10 @@ main {
   color: var(--detail);
 }
 
+.opt {
+  display: none;
+}
+
 .accordion::before {
   position: absolute;
   content: '';
@@ -221,5 +238,35 @@ main {
   width: 92%;
   height: 100%;
   border-bottom: 0.16rem solid var(--primary);
+}
+
+@media (max-width: 800px) {
+  .sidebar {
+    position: fixed;
+    z-index: 10;
+    top: 0;
+  }
+
+  .sidebar-backdrop {
+    position: fixed;
+    z-index: 10;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--canvas);
+    opacity: 0.4;
+  }
+
+  .accordion {
+    top: 3.2rem;
+  }
+
+  .opt {
+    display: block;
+  }
+
+  .event-form {
+    display: none;
+  }
 }
 </style>

@@ -8,6 +8,10 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  militaryTime: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 const description = props.element!.description;
