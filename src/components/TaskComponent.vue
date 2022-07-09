@@ -123,6 +123,7 @@ function onResizeEnd(e: MouseEvent) {
         : ''
     "
   >
+    {{ props.element.flag }}
     <div v-if="props.minimal != true">
       <p>{{ element.description }}</p>
       <p>

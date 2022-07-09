@@ -50,7 +50,7 @@ const dropMode = ref(false);
 /**
  * Creates an array for the week header,
  * consequently specifying values for the days being used in the current week.
- * Later to be referenced in startArr for filtering registers.
+ * Later to be referenced in refreshArr for filtering registers.
  */
 const week = computed(() => {
   const curDate = props.date.getDate();
@@ -124,7 +124,7 @@ const hours = computed(() => {
   return arr;
 });
 
-function startArr() {
+const limits = computed(() => {
   let initDay = week.value[0].number();
   let finalDay = week.value[week.value.length - 1].number() + 1;
 
@@ -139,8 +139,8 @@ function startArr() {
     }/${finalDay}`
   );
 
-  refreshArr(props.records);
-}
+  return { initial: startDate, final: endDate };
+});
 
 function refreshArr(sourceArr: any) {
   sourceArr.forEach((object) => {
@@ -148,6 +148,9 @@ function refreshArr(sourceArr: any) {
     delete object['flag'];
   });
   sortedArr.value = sourceArr
+    .filter((rec: any) => {
+      return rec.date >= limits.value.initial && rec.date <= limits.value.final;
+    })
     .sort((a, b) => a.date - b.date)
     .map((el) => {
       let cellId = calcCellId(el.date);
@@ -167,7 +170,7 @@ function refreshArr(sourceArr: any) {
         };
         sortedArr.value[sortedArr.value.indexOf(el)] = {
           ...el,
-          flag: concurrent.flag ? concurrent.flag + 1 : 1,
+          flag: el.flag ? el.flag + 1 : 1,
         };
       }
     }
@@ -188,7 +191,7 @@ function calcCellId(date) {
 }
 
 onMounted(() => {
-  startArr();
+  refreshArr(props.records);
 });
 
 function dragEvent(e: any, id: any) {
